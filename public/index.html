@@ -12,13 +12,36 @@
         canvas.width = window.innerWidth;
         this.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        this.height = window.innerHeight;
-
+		this.height = window.innerHeight;
+		
+		const sharedPlayerAttributes = {
+			width  : 20,
+			height : 100,
+			speed  : 15,
+			direction : 0,
+		}
+		
 		app.onInit = function(){
-			
+		
+			this.nodes.push({
+				id : "player1",
+				x  : 100,
+				y  : (window.innerHeight / 2) - 50,
+				color : "red",
+				...sharedPlayerAttributes,
+			})
+
+			this.nodes.push({
+				id : "player2",
+				x  : window.innerWidth - 120,
+				y  : (window.innerHeight / 2) - 50,
+				color: "green",
+				...sharedPlayerAttributes,
+			})
 		};
 
 		app.onUpdate = function(time){
+
 			
 		};
 	</script>
