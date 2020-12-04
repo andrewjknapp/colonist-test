@@ -81,7 +81,7 @@
 			this.isPaused = true;
 
 			storedVerticalBallSpeed = (Math.random() * BALL_INITIAL_VERTICAL_SPEED) - BALL_INITIAL_VERTICAL_SPEED / 2;
-			storedHorizontalBallSpeed =  BALL_INITIAL_HORIZONTAL_SPEED
+			storedHorizontalBallSpeed = (Math.random() - 0.5 > 0 ? 1 : -1) * BALL_INITIAL_HORIZONTAL_SPEED
 		
 			// Create Nodes for Player1, Player2, and Ball
 			this.nodes.push({
