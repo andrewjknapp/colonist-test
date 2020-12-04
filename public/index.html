@@ -10,12 +10,34 @@
 	<script type="text/javascript" src="js/app.js"></script>
 	<script type="text/javascript">
 		
+		app.isPaused = true;
 		const BALL_INITIAL_SPEED = 30;
 		const sharedPlayerAttributes = {
 			width  : 20,
 			height : 100,
 			speed  : 15,
 			direction : 0,
+		}
+		let player1Node;
+		let player2Node;
+		let ballNode;
+		let ballVerticalSpeed = (Math.random() * BALL_INITIAL_SPEED) - BALL_INITIAL_SPEED / 2;
+		let ballHorizontalSpeed = (Math.random() * BALL_INITIAL_SPEED) - BALL_INITIAL_SPEED / 2;
+
+		app.pause = function() {
+			this.isPaused = !this.isPaused;
+			ballNode = this.getNode('ball')
+
+			if (this.isPaused) {
+				ballHorizontalSpeed = ballNode.dx;
+				ballVerticalSpeed = ballNode.dy;
+				ballNode.dy = 0;
+				ballNode.dx = 0;
+			}
+			else {
+				ballNode.dx = ballHorizontalSpeed;
+				ballNode.dy = ballVerticalSpeed;
+			}
 		}
 		
 		app.onInit = function(){
@@ -29,29 +51,29 @@
 			this.nodes.push({
 				id : "player1",
 				x  : 100,
-				y  : (window.innerHeight / 2) - 50,
+				y  : (app.height / 2) - 50,
 				color : "red",
 				...sharedPlayerAttributes,
 			})
 
 			this.nodes.push({
 				id : "player2",
-				x  : window.innerWidth - 120,
-				y  : (window.innerHeight / 2) - 50,
+				x  : app.width - 120,
+				y  : (app.height / 2) - 50,
 				color: "green",
 				...sharedPlayerAttributes,
 			})
 
 			this.nodes.push({
 				id : "ball",
-				x  : (window.innerWidth / 2) - 10,
-				y  : (window.innerHeight / 2) - 10,
+				x  : (app.width / 2) - 10,
+				y  : (app.height / 2) - 10,
 				color  : "blue",
 				width  : 20,
 				height : 20,
 				speed  : 5,
-				dy : (Math.random() * BALL_INITIAL_SPEED) - BALL_INITIAL_SPEED / 2,   // Initial y velocity between -2.5 and 2.5
-				dx : ((Math.random() * BALL_INITIAL_SPEED) - BALL_INITIAL_SPEED / 2), // Initial x velocity between -2.5 and 2.5 
+				dy : 0,
+				dx : 0,
 			})
 
 			// Add listeners to check for button presses
@@ -59,20 +81,25 @@
 			// their speed * direction to player y value
 			// in onUpdate;
 			document.addEventListener("keydown", (e) => {
-				
-				switch (e.key) {
-					case 'w':
-						this.getNode('player1').direction = -1;
-						break;
-					case 's':
-						this.getNode('player1').direction = 1;
-						break;
-					case 'ArrowUp':
-						this.getNode('player2').direction = -1;
-						break;
-					case 'ArrowDown':
-						this.getNode('player2').direction = 1;
-						break;
+				console.log(e)
+				if (!this.isPaused) {
+					switch (e.key) {
+						case 'w':
+							this.getNode('player1').direction = -1;
+							break;
+						case 's':
+							this.getNode('player1').direction = 1;
+							break;
+						case 'ArrowUp':
+							this.getNode('player2').direction = -1;
+							break;
+						case 'ArrowDown':
+							this.getNode('player2').direction = 1;
+							break;
+					}
+				}
+				if (e.key === " ") {
+					this.pause();
 				}
 			})
 
@@ -89,10 +116,6 @@
 			})
 		};
 
-		let player1Node;
-		let player2Node;
-		let ballNode;
-
 		app.onUpdate = function(time){
 			// Store in variables to prevent recalling
 			// getNode O(n) lookup each time it is used
@@ -106,11 +129,11 @@
 
 			// Handle Ball Movement and interractions
 			// Bounce off cieling and floor
-			if (ballNode.y <= 0 || ballNode.y >= (window.innerHeight - ballNode.height)) {
+			if (ballNode.y <= 0 || ballNode.y >= (app.height - ballNode.height)) {
 				ballNode.dy *= -1;
 			}
 			// Bounce off back walls
-			if (ballNode.x <= 0 || ballNode.x >= (window.innerWidth - ballNode.width)) {
+			if (ballNode.x <= 0 || ballNode.x >= (app.width - ballNode.width)) {
 				ballNode.dx *= -1;
 			} 
 					// If Ball makes contact with Player1's paddle
@@ -132,11 +155,11 @@
 
 		const handlePlayerMovement = (player) => {
 				// If the player is within the canvas allow to move *OR*
-			if (player.y > 0 && player.y < window.innerHeight - player.height ||
+			if (player.y > 0 && player.y < app.height - player.height ||
 				// If player is at top boundary, prevent from going upward *OR*
 				player.y === 0 && player.direction != -1 ||
 				// If player is at bottom boundary, prevent from going downward
-				player.y === window.innerHeight - player.height && player.direction != 1) {
+				player.y === app.height - player.height && player.direction != 1) {
 
 				player.y += player.direction * player.speed;
 			}
@@ -145,10 +168,12 @@
 				player.y = 0;
 			}
 			// If the player is below the bottom, set y to bottom.
-			else if (player.y > window.innerHeight - player.height) {
-				player.y = window.innerHeight - player.height;
+			else if (player.y > app.height - player.height) {
+				player.y = app.height - player.height;
 			}
 		}
+
+		
 	</script>
 </body>
 </html>
