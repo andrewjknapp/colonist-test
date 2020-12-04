@@ -11,6 +11,9 @@
 	<script type="text/javascript">
 		
 		app.isPaused = true;
+		app.keyupBindings = {};
+		app.keydownBindings = {};
+
 		const BALL_INITIAL_SPEED = 30;
 		const sharedPlayerAttributes = {
 			width  : 20,
@@ -23,6 +26,7 @@
 		let ballNode;
 		let ballVerticalSpeed = (Math.random() * BALL_INITIAL_SPEED) - BALL_INITIAL_SPEED / 2;
 		let ballHorizontalSpeed = (Math.random() * BALL_INITIAL_SPEED) - BALL_INITIAL_SPEED / 2;
+		
 
 		app.pause = function() {
 			this.isPaused = !this.isPaused;
@@ -46,6 +50,8 @@
 			this.width = window.innerWidth;
 			canvas.height = window.innerHeight;
 			this.height = window.innerHeight;
+
+			this.isPaused = true;
 		
 			// Create Nodes for Player1, Player2, and Ball
 			this.nodes.push({
@@ -76,44 +82,19 @@
 				dx : 0,
 			})
 
-			// Add listeners to check for button presses
-			// Will change position of player by adding 
-			// their speed * direction to player y value
-			// in onUpdate;
-			document.addEventListener("keydown", (e) => {
-				console.log(e)
-				if (!this.isPaused) {
-					switch (e.key) {
-						case 'w':
-							this.getNode('player1').direction = -1;
-							break;
-						case 's':
-							this.getNode('player1').direction = 1;
-							break;
-						case 'ArrowUp':
-							this.getNode('player2').direction = -1;
-							break;
-						case 'ArrowDown':
-							this.getNode('player2').direction = 1;
-							break;
-					}
-				}
-				if (e.key === " ") {
-					this.pause();
-				}
-			})
+			this.keydownBindings = {
+				"w": () => (this.getNode('player1').direction = -1),
+				"s": () => (this.getNode('player1').direction = 1),
+				"ArrowUp": () => (this.getNode('player2').direction = -1),
+				"ArrowDown": () => (this.getNode('player2').direction = 1),
+			}
 
-			document.addEventListener("keyup", (e) => {
-				switch (e.key) {
-					case 'w':
-					case 's':
-						this.getNode('player1').direction = 0;
-						break;
-					case 'ArrowUp':
-					case 'ArrowDown':
-						this.getNode('player2').direction = 0;
-				}
-			})
+			this.keyupBindings = {
+				"w": () => (this.getNode('player1').direction = 0),
+				"s": () => (this.getNode('player1').direction = 0),
+				"ArrowUp": () => (this.getNode('player2').direction = 0),
+				"ArrowDown": () => (this.getNode('player2').direction = 0),
+			}
 		};
 
 		app.onUpdate = function(time){
@@ -132,26 +113,26 @@
 			if (ballNode.y <= 0 || ballNode.y >= (app.height - ballNode.height)) {
 				ballNode.dy *= -1;
 			}
-			// Bounce off back walls
-			if (ballNode.x <= 0 || ballNode.x >= (app.width - ballNode.width)) {
-				ballNode.dx *= -1;
-			} 
-					// If Ball makes contact with Player1's paddle
-			else if (ballNode.x <= (player1Node.x + player1Node.width) && 
-					 ballNode.x >= (player1Node.x + player1Node.width / 2) && 
-					 ballNode.y >= player1Node.y && ballNode.y <= player1Node.y + player1Node.height) {
+			// If Ball makes contact with Player1's paddle
+			if (ballNode.x <= (player1Node.x + player1Node.width) && 
+			ballNode.x >= (player1Node.x + player1Node.width / 2) && 
+			ballNode.y >= player1Node.y && ballNode.y <= player1Node.y + player1Node.height) {
 				ballNode.dx *= -1;
 			}	
-					// If Ball makes contact with Player2's paddle
+			// If Ball makes contact with Player2's paddle
 			else if (ballNode.x + ballNode.width >= player2Node.x && ballNode.x + ballNode.width <= player2Node.x + (player2Node.width / 2) &&
-					ballNode.y >= player2Node.y && ballNode.y <= player2Node.y + player2Node.height) {
+			ballNode.y >= player2Node.y && ballNode.y <= player2Node.y + player2Node.height) {
 				ballNode.dx *= -1
 			}
+			else if (ballNode.x <= 0 || ballNode.x >= (app.width - ballNode.width)) {
+				ballNode.dx *= -1;
+			} 
 			
 			ballNode.x += ballNode.dx;
 			ballNode.y += ballNode.dy;
 			
 		};
+		// Bounce off back walls
 
 		const handlePlayerMovement = (player) => {
 				// If the player is within the canvas allow to move *OR*
@@ -173,6 +154,23 @@
 			}
 		}
 
+		document.addEventListener("keydown", (e) => {
+			let action = app.keydownBindings[e.key];
+			if (action) {
+				action();
+			};
+
+			if (e.key === " ") {
+				app.pause();
+			}
+		})
+
+		document.addEventListener("keyup", (e) => {
+			let action = app.keyupBindings[e.key];
+			if (action) {
+				action();
+			};
+		})
 		
 	</script>
 </body>
