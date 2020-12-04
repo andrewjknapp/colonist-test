@@ -10,7 +10,7 @@
 	<script type="text/javascript" src="js/app.js"></script>
 	<script type="text/javascript">
 		
-		const BALL_INITIAL_SPEED = 10;
+		const BALL_INITIAL_SPEED = 30;
 		const sharedPlayerAttributes = {
 			width  : 20,
 			height : 100,
@@ -105,18 +105,29 @@
 			handlePlayerMovement(player2Node);
 
 			// Handle Ball Movement and interractions
+			// Bounce off cieling and floor
 			if (ballNode.y <= 0 || ballNode.y >= (window.innerHeight - ballNode.height)) {
 				ballNode.dy *= -1;
 			}
-
+			// Bounce off back walls
 			if (ballNode.x <= 0 || ballNode.x >= (window.innerWidth - ballNode.width)) {
 				ballNode.dx *= -1;
+			} 
+					// If Ball makes contact with Player1's paddle
+			else if (ballNode.x <= (player1Node.x + player1Node.width) && 
+					 ballNode.x >= (player1Node.x + player1Node.width / 2) && 
+					 ballNode.y >= player1Node.y && ballNode.y <= player1Node.y + player1Node.height) {
+				ballNode.dx *= -1;
+			}	
+					// If Ball makes contact with Player2's paddle
+			else if (ballNode.x + ballNode.width >= player2Node.x && ballNode.x + ballNode.width <= player2Node.x + (player2Node.width / 2) &&
+					ballNode.y >= player2Node.y && ballNode.y <= player2Node.y + player2Node.height) {
+				ballNode.dx *= -1
 			}
 			
 			ballNode.x += ballNode.dx;
 			ballNode.y += ballNode.dy;
 			
-
 		};
 
 		const handlePlayerMovement = (player) => {
