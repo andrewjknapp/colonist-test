@@ -14,7 +14,7 @@
 		app.keyupBindings = {};
 		app.keydownBindings = {};
 
-		const BALL_INITIAL_HORIZONTAL_SPEED = 30;
+		const BALL_INITIAL_HORIZONTAL_SPEED = 9;
 		const BALL_INITIAL_VERTICAL_SPEED = 5;
 		const sharedPlayerAttributes = {
 			width  : 20,
@@ -61,7 +61,7 @@
 			this.isPaused = true;
 
 			storedVerticalBallSpeed = (Math.random() * BALL_INITIAL_VERTICAL_SPEED) - BALL_INITIAL_VERTICAL_SPEED / 2;
-			storedHorizontalBallSpeed = generateInitialHorizontalVelocity();
+			storedHorizontalBallSpeed = BALL_INITIAL_HORIZONTAL_SPEED
 		
 			// Create Nodes for Player1, Player2, and Ball
 			this.nodes.push({
@@ -125,14 +125,14 @@
 			}
 			// If Ball makes contact with Player1's paddle
 			if (ballNode.x <= (player1Node.x + player1Node.width) && 
-			ballNode.x >= (player1Node.x + player1Node.width / 2) && 
+			ballNode.x >= player1Node.x && 
 			ballNode.y >= player1Node.y && ballNode.y <= player1Node.y + player1Node.height) {
-				ballNode.dx *= -1;
+				modifyBallVelocity(ballNode, player1Node);
 			}	
 			// If Ball makes contact with Player2's paddle
-			else if (ballNode.x + ballNode.width >= player2Node.x && ballNode.x + ballNode.width <= player2Node.x + (player2Node.width / 2) &&
+			else if (ballNode.x + ballNode.width >= player2Node.x && ballNode.x + ballNode.width <= player2Node.x + player2Node.width &&
 			ballNode.y >= player2Node.y && ballNode.y <= player2Node.y + player2Node.height) {
-				ballNode.dx *= -1
+				modifyBallVelocity(ballNode, player2Node);
 			}
 			else if (ballNode.x <= 0 || ballNode.x >= (app.width - ballNode.width)) {
 				console.log("HIT!!!");
@@ -165,16 +165,21 @@
 			}
 		}
 
-		const generateInitialHorizontalVelocity = () => {
-			let dx = (Math.random() - 0.5) * BALL_INITIAL_HORIZONTAL_SPEED;
+		const modifyBallVelocity = (ball, player) => {
 
-			if (dx < 0) {
-				dx -= 3;
+			ball.dx *= -1.1;
+
+			let locationOnPaddle = player.y - ball.y;
+
+			if (locationOnPaddle > -50) {
+				ball.dy = -(Math.random() * 5) - Math.abs(ball.dy)
+
 			} else {
-				dx += 3;
+				ball.dy = (Math.random() * 5) + Math.abs(ball.dy);
+
 			}
 
-			return dx;
+
 		}
 
 		document.addEventListener("keydown", (e) => {
