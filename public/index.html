@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
 	<link rel="stylesheet" href="style.css">
 	<title>Ping Pong Game</title>
 </head>
@@ -8,11 +9,6 @@
 	<canvas id="canvas" width="800" height="400"></canvas>
 	<script type="text/javascript" src="js/app.js"></script>
 	<script type="text/javascript">
-		const canvas = document.getElementById("canvas");
-        canvas.width = window.innerWidth;
-        this.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-		this.height = window.innerHeight;
 		
 		const sharedPlayerAttributes = {
 			width  : 20,
@@ -22,6 +18,11 @@
 		}
 		
 		app.onInit = function(){
+			const canvas = document.getElementById("canvas");
+			canvas.width = window.innerWidth;
+			this.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+			this.height = window.innerHeight;
 		
 			// Create Nodes for Player1, Player2, and Ball
 			this.nodes.push({
@@ -53,11 +54,49 @@
 			})
 
 			// Add listeners to check for button presses
+			// Will change position of player by adding 
+			// their speed * direction to player y value
+			// in onUpdate;
+			document.addEventListener("keydown", (e) => {
+				
+				switch (e.key) {
+					case 'w':
+						this.getNode('player1').direction = -1;
+						break;
+					case 's':
+						this.getNode('player1').direction = 1;
+						break;
+					case 'ArrowUp':
+						this.getNode('player2').direction = -1;
+						break;
+					case 'ArrowDown':
+						this.getNode('player2').direction = 1;
+						break;
+				}
+			})
+
+			document.addEventListener("keyup", (e) => {
+				switch (e.key) {
+					case 'w':
+					case 's':
+						this.getNode('player1').direction = 0;
+						break;
+					case 'ArrowUp':
+					case 'ArrowDown':
+						this.getNode('player2').direction = 0;
+				}
+			})
 		};
 
-		app.onUpdate = function(time){
+		let player1;
+		let player2;
 
-			
+		app.onUpdate = function(time){
+			player1 = this.getNode('player1');
+			player2 = this.getNode('player2');
+
+			player1.y += player1.direction * player1.speed;
+			player2.y += player2.direction * player2.speed;
 		};
 	</script>
 </body>
