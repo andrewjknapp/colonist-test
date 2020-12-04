@@ -19,7 +19,7 @@
 		const sharedPlayerAttributes = {
 			width  : 20,
 			height : 100,
-			speed  : 15,
+			speed  : 20,
 			direction : 0,
 		}
 		let player1Node;
@@ -126,12 +126,12 @@
 			// If Ball makes contact with Player1's paddle
 			if (ballNode.x <= (player1Node.x + player1Node.width) && 
 			ballNode.x >= player1Node.x && 
-			ballNode.y >= player1Node.y && ballNode.y <= player1Node.y + player1Node.height) {
+			ballNode.y + (ballNode.height / 2) >= player1Node.y && ballNode.y + (ballNode.height / 2) <= player1Node.y + player1Node.height) {
 				modifyBallVelocity(ballNode, player1Node);
 			}	
 			// If Ball makes contact with Player2's paddle
 			else if (ballNode.x + ballNode.width >= player2Node.x && ballNode.x + ballNode.width <= player2Node.x + player2Node.width &&
-			ballNode.y >= player2Node.y && ballNode.y <= player2Node.y + player2Node.height) {
+			ballNode.y + (ballNode.height / 2) >= player2Node.y && ballNode.y + (ballNode.height / 2) <= player2Node.y + player2Node.height) {
 				modifyBallVelocity(ballNode, player2Node);
 			}
 			else if (ballNode.x <= 0 || ballNode.x >= (app.width - ballNode.width)) {
