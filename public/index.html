@@ -23,6 +23,7 @@
 		
 		app.onInit = function(){
 		
+			// Create Nodes for Player1, Player2, and Ball
 			this.nodes.push({
 				id : "player1",
 				x  : 100,
@@ -38,6 +39,20 @@
 				color: "green",
 				...sharedPlayerAttributes,
 			})
+
+			this.nodes.push({
+				id : "ball",
+				x  : (window.innerWidth / 2) - 10,
+				y  : (window.innerHeight / 2) - 10,
+				color  : "blue",
+				width  : 20,
+				height : 20,
+				speed  : 5,
+				dy : (Math.random() * 5) - 2.5,   // Initial y velocity between -2.5 and 2.5
+				dx : ((Math.random() * 5) - 2.5), // Initial x velocity between -2.5 and 2.5 
+			})
+
+			// Add listeners to check for button presses
 		};
 
 		app.onUpdate = function(time){
