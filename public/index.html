@@ -24,8 +24,8 @@
 		let player1Node;
 		let player2Node;
 		let ballNode;
-		let ballVerticalSpeed = (Math.random() * BALL_INITIAL_SPEED) - BALL_INITIAL_SPEED / 2;
-		let ballHorizontalSpeed = (Math.random() * BALL_INITIAL_SPEED) - BALL_INITIAL_SPEED / 2;
+		let storedVerticalBallSpeed;
+		let storedHorizontalBallSpeed;
 		
 
 		app.pause = function() {
@@ -33,15 +33,21 @@
 			ballNode = this.getNode('ball')
 
 			if (this.isPaused) {
-				ballHorizontalSpeed = ballNode.dx;
-				ballVerticalSpeed = ballNode.dy;
+				storedHorizontalBallSpeed = ballNode.dx;
+				storedVerticalBallSpeed = ballNode.dy;
 				ballNode.dy = 0;
 				ballNode.dx = 0;
 			}
 			else {
-				ballNode.dx = ballHorizontalSpeed;
-				ballNode.dy = ballVerticalSpeed;
+				ballNode.dx = storedHorizontalBallSpeed;
+				ballNode.dy = storedVerticalBallSpeed;
 			}
+		}
+
+		app.reset = function() {
+			this.nodes = [];
+
+			this.onInit();
 		}
 		
 		app.onInit = function(){
@@ -52,6 +58,9 @@
 			this.height = window.innerHeight;
 
 			this.isPaused = true;
+
+			storedVerticalBallSpeed = (Math.random() * BALL_INITIAL_SPEED) - BALL_INITIAL_SPEED / 2;
+			storedHorizontalBallSpeed = (Math.random() * BALL_INITIAL_SPEED) - BALL_INITIAL_SPEED / 2;
 		
 			// Create Nodes for Player1, Player2, and Ball
 			this.nodes.push({
@@ -125,7 +134,8 @@
 				ballNode.dx *= -1
 			}
 			else if (ballNode.x <= 0 || ballNode.x >= (app.width - ballNode.width)) {
-				ballNode.dx *= -1;
+				console.log("HIT!!!");
+				this.reset();
 			} 
 			
 			ballNode.x += ballNode.dx;
@@ -155,10 +165,12 @@
 		}
 
 		document.addEventListener("keydown", (e) => {
-			let action = app.keydownBindings[e.key];
-			if (action) {
-				action();
-			};
+			if (!app.isPaused) {
+				let action = app.keydownBindings[e.key];
+				if (action) {
+					action();
+				};
+			}
 
 			if (e.key === " ") {
 				app.pause();
@@ -166,10 +178,12 @@
 		})
 
 		document.addEventListener("keyup", (e) => {
-			let action = app.keyupBindings[e.key];
-			if (action) {
-				action();
-			};
+			if (!app.isPaused) {
+				let action = app.keyupBindings[e.key];
+				if (action) {
+					action();
+				};
+			}
 		})
 		
 	</script>
