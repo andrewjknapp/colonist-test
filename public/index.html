@@ -10,11 +10,12 @@
 	<script type="text/javascript" src="js/app.js"></script>
 	<script type="text/javascript">
 		
-		app.isPaused = true;
+
 		app.keyupBindings = {};
 		app.keydownBindings = {};
 		app.p1Score = 0;
 		app.p2Score = 0;
+
 
 		const SCORE_TO_WIN = 5;
 		const BALL_INITIAL_HORIZONTAL_SPEED = 9;
@@ -25,11 +26,14 @@
 			speed  : 20,
 			direction : 0,
 		}
+		let storedVerticalBallSpeed;
+		let storedHorizontalBallSpeed;
+
+		// Used to store nodes to avoid calling them
+		// through getNode to avoid the O(n) lookup
 		let player1Node;
 		let player2Node;
 		let ballNode;
-		let storedVerticalBallSpeed;
-		let storedHorizontalBallSpeed;
 		
 
 		app.pause = function() {
@@ -56,7 +60,6 @@
 		}
 
 		app.nextRound = function() {
-
 			if (this.p1Score >= SCORE_TO_WIN) {
 				console.log("PLAYER 1 WINS!!!");
 				this.reset();
@@ -72,14 +75,17 @@
 		}
 		
 		app.onInit = function(){
+			// Ensure the canvas is sized correctly for the browser
 			const canvas = document.getElementById("canvas");
 			canvas.width = window.innerWidth;
 			this.width = window.innerWidth;
 			canvas.height = window.innerHeight;
 			this.height = window.innerHeight;
 
+			// The games starts in the paused state
 			this.isPaused = true;
 
+			// Generate Initial Ball velocity
 			storedVerticalBallSpeed = (Math.random() * BALL_INITIAL_VERTICAL_SPEED) - BALL_INITIAL_VERTICAL_SPEED / 2;
 			storedHorizontalBallSpeed = (Math.random() - 0.5 > 0 ? 1 : -1) * BALL_INITIAL_HORIZONTAL_SPEED
 		
@@ -112,6 +118,7 @@
 				dx : 0,
 			})
 
+			// Define key bindings for movement
 			this.keydownBindings = {
 				"w": () => (this.getNode('player1').direction = -1),
 				"s": () => (this.getNode('player1').direction = 1),
@@ -128,8 +135,6 @@
 		};
 
 		app.onUpdate = function(time){
-			// Store in variables to prevent recalling
-			// getNode O(n) lookup each time it is used
 			player1Node = this.getNode('player1');
 			player2Node = this.getNode('player2');
 			ballNode = this.getNode('ball');
@@ -171,7 +176,6 @@
 			ballNode.y += ballNode.dy;
 			
 		};
-		// Bounce off back walls
 
 		const handlePlayerMovement = (player) => {
 				// If the player is within the canvas allow to move *OR*
@@ -199,7 +203,7 @@
 
 			let locationOnPaddle = player.y - ball.y;
 
-			if (locationOnPaddle > -50) {
+			if (locationOnPaddle > -(player.height / 2)) {
 				ball.dy = -(Math.random() * 5) - Math.abs(ball.dy)
 
 			} else {
