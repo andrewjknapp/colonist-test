@@ -13,7 +13,10 @@
 		app.isPaused = true;
 		app.keyupBindings = {};
 		app.keydownBindings = {};
+		app.p1Score = 0;
+		app.p2Score = 0;
 
+		const SCORE_TO_WIN = 5;
 		const BALL_INITIAL_HORIZONTAL_SPEED = 9;
 		const BALL_INITIAL_VERTICAL_SPEED = 5;
 		const sharedPlayerAttributes = {
@@ -46,9 +49,26 @@
 		}
 
 		app.reset = function() {
+			app.p1Score = 0;
+			app.p2Score = 0;
 			this.nodes = [];
-
 			this.onInit();
+		}
+
+		app.nextRound = function() {
+
+			if (this.p1Score >= SCORE_TO_WIN) {
+				console.log("PLAYER 1 WINS!!!");
+				this.reset();
+				return;
+			}
+			else if (this.p1Score >= SCORE_TO_WIN) {
+				console.log("PLAYER 2 WINS!!!");
+				this.reset();
+				return;
+			}
+			this.nodes = [];
+			this.onInit(); 
 		}
 		
 		app.onInit = function(){
@@ -61,7 +81,7 @@
 			this.isPaused = true;
 
 			storedVerticalBallSpeed = (Math.random() * BALL_INITIAL_VERTICAL_SPEED) - BALL_INITIAL_VERTICAL_SPEED / 2;
-			storedHorizontalBallSpeed = BALL_INITIAL_HORIZONTAL_SPEED
+			storedHorizontalBallSpeed =  BALL_INITIAL_HORIZONTAL_SPEED
 		
 			// Create Nodes for Player1, Player2, and Ball
 			this.nodes.push({
@@ -134,9 +154,17 @@
 			ballNode.y + (ballNode.height / 2) >= player2Node.y && ballNode.y + (ballNode.height / 2) <= player2Node.y + player2Node.height) {
 				modifyBallVelocity(ballNode, player2Node);
 			}
-			else if (ballNode.x <= 0 || ballNode.x >= (app.width - ballNode.width)) {
-				console.log("HIT!!!");
-				this.reset();
+			else if (ballNode.x <= 0) {
+				console.log("PLAYER 2 SCORES!!");
+				app.p2Score++;
+				console.log(`****** SCORE *****\nPlayer 1: ${app.p1Score}\nPlayer 2: ${app.p2Score}\n*****************`);
+				this.nextRound();
+			} 
+			else if (ballNode.x >= (app.width - ballNode.width)) {
+				console.log("PLAYER 1 SCORES!!");
+				app.p1Score++;
+				console.log(`****** SCORE *****\nPlayer 1: ${app.p1Score}\nPlayer 2: ${app.p2Score}\n*****************`)
+				this.nextRound();
 			} 
 			
 			ballNode.x += ballNode.dx;
