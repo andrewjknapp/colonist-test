@@ -10,6 +10,7 @@
 	<script type="text/javascript" src="js/app.js"></script>
 	<script type="text/javascript">
 		
+		const BALL_INITIAL_SPEED = 10;
 		const sharedPlayerAttributes = {
 			width  : 20,
 			height : 100,
@@ -49,8 +50,8 @@
 				width  : 20,
 				height : 20,
 				speed  : 5,
-				dy : (Math.random() * 5) - 2.5,   // Initial y velocity between -2.5 and 2.5
-				dx : ((Math.random() * 5) - 2.5), // Initial x velocity between -2.5 and 2.5 
+				dy : (Math.random() * BALL_INITIAL_SPEED) - BALL_INITIAL_SPEED / 2,   // Initial y velocity between -2.5 and 2.5
+				dx : ((Math.random() * BALL_INITIAL_SPEED) - BALL_INITIAL_SPEED / 2), // Initial x velocity between -2.5 and 2.5 
 			})
 
 			// Add listeners to check for button presses
@@ -88,13 +89,34 @@
 			})
 		};
 
-		let player1;
-		let player2;
+		let player1Node;
+		let player2Node;
+		let ballNode;
 
 		app.onUpdate = function(time){
+			// Store in variables to prevent recalling
+			// getNode O(n) lookup each time it is used
+			player1Node = this.getNode('player1');
+			player2Node = this.getNode('player2');
+			ballNode = this.getNode('ball');
 
-			handlePlayerMovement(this.getNode('player1'));
-			handlePlayerMovement(this.getNode('player2'));
+			// Control Player Movement
+			handlePlayerMovement(player1Node);
+			handlePlayerMovement(player2Node);
+
+			// Handle Ball Movement and interractions
+			if (ballNode.y <= 0 || ballNode.y >= (window.innerHeight - ballNode.height)) {
+				ballNode.dy *= -1;
+			}
+
+			if (ballNode.x <= 0 || ballNode.x >= (window.innerWidth - ballNode.width)) {
+				ballNode.dx *= -1;
+			}
+			
+			ballNode.x += ballNode.dx;
+			ballNode.y += ballNode.dy;
+			
+
 		};
 
 		const handlePlayerMovement = (player) => {
