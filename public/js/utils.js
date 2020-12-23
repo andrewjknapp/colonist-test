@@ -59,8 +59,9 @@ var utils = {
         ball.dx *= -1.1;
 
         const locationOnPaddle = player.y - ball.y;
+        const ballIsHittingTopHalfOfPaddle = locationOnPaddle > -(player.height / 2);
 
-        if (locationOnPaddle > -(player.height / 2)) {
+        if (ballIsHittingTopHalfOfPaddle) {
             ball.dy = -(Math.random() * 5) - Math.abs(ball.dy)
 
         } else {
@@ -71,7 +72,7 @@ var utils = {
     handleBallHittingCeilingAndFloor(ball) {
         const ballIsHittingCeiling = ball.y <= 0;
         const ballIsHittingFloor = ball.y >= (app.height - ball.height);
-        
+
         if (ballIsHittingCeiling || ballIsHittingFloor) {
             ball.dy *= -1;
         }

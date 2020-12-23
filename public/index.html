@@ -90,7 +90,6 @@
 			storedVerticalBallSpeed = (Math.random() * BALL_INITIAL_VERTICAL_SPEED) - BALL_INITIAL_VERTICAL_SPEED / 2;
 			storedHorizontalBallSpeed = (Math.random() - 0.5 > 0 ? 1 : -1) * BALL_INITIAL_HORIZONTAL_SPEED
 		
-			// Create Nodes for Player1, Player2, and Ball
 			this.nodes.push({
 				id : "player1",
 				x  : 100,
@@ -121,7 +120,6 @@
 				dx : 0,
 			})
 
-			// Define key bindings for movement
 			this.keydownBindings = {
 				"w": () => (this.getNode('player1').direction = -1),
 				"s": () => (this.getNode('player1').direction = 1),
@@ -143,7 +141,7 @@
 			player1Node = this.getNode('player1');
 			player2Node = this.getNode('player2');
 			ballNode = this.getNode('ball');
-			
+
 			const player1HasScored = ballNode.x >= (app.width - ballNode.width);
 			const player2HasScored = ballNode.x <= 0;
 
