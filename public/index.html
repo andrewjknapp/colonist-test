@@ -171,7 +171,8 @@
 		};
 
 		document.addEventListener("keydown", (e) => {
-			if (!app.isPaused) {
+			const appIsNotPaused = !app.isPaused;
+			if (appIsNotPaused) {
 				let action = app.keydownBindings[e.key];
 				if (action) {
 					action();
@@ -184,7 +185,8 @@
 		})
 
 		document.addEventListener("keyup", (e) => {
-			if (!app.isPaused) {
+			const appIsNotPaused = !app.isPaused;
+			if (appIsNotPaused) {
 				let action = app.keyupBindings[e.key];
 				if (action) {
 					action();
