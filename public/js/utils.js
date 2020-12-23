@@ -27,34 +27,28 @@ var utils = {
     ballIsHittingPlayerPaddle: (ballNode, playerNode) => {
         const playerIsOnLeft = playerNode.position === "left";
 
-        const ballTop = ballNode.y;
-        const ballBottom = ballNode.y + ballNode.height;
-        const ballRight = ballNode.x + ballNode.width;
-        const ballLeft = ballNode.x;
+        const ballIsAbovePaddle = ballNode.y + ballNode.height < playerNode.y;
+        const ballIsBelowPaddle = ballNode.y > playerNode.y + playerNode.height;
 
-        const playerPaddleTop = playerNode.y;
-        const playerPaddleBottom = playerNode.y + playerNode.height;
-        const playerPaddleRight = playerNode.x + playerNode.width;
-        const playerPaddleLeft = playerNode.x;
+        let ballIsInfrontOfPaddle;
+        let ballIsBehindPaddle;
+        
+        if (playerIsOnLeft) {
+            ballIsInfrontOfPaddle = ballNode.x > playerNode.x + playerNode.width;
+            ballIsBehindPaddle = ballNode.x < playerNode.x;
+        }  else {
+            ballIsInfrontOfPaddle = ballNode.x + ballNode.width < playerNode.x;
+            ballIsBehindPaddle = ballNode.x + ballNode.width > playerNode.x + playerNode.width;
+        }
 
         let ballIsHitting = true;
 
-        if (ballBottom < playerPaddleTop)  {
-            ballIsHitting = false;
-        }
+        if (ballIsAbovePaddle ||
+            ballIsBelowPaddle ||
+            ballIsInfrontOfPaddle ||
+            ballIsBehindPaddle)  {
 
-        if (ballTop > playerPaddleBottom) {
             ballIsHitting = false;
-        }
-        
-        if (playerIsOnLeft) {
-            if (ballLeft > playerPaddleRight || ballLeft < playerPaddleLeft) {
-                ballIsHitting = false;
-            }
-        } else {
-            if (ballRight < playerPaddleLeft || ballRight > playerPaddleRight) {
-                ballIsHitting = false;
-            }
         }
 
         return ballIsHitting;
