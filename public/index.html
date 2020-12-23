@@ -8,6 +8,7 @@
 <body>
 	<canvas id="canvas" width="800" height="400"></canvas>
 	<script type="text/javascript" src="js/app.js"></script>
+	<script type="text/javascript" src="js/utils.js"></script>
 	<script type="text/javascript">
 		
 
@@ -142,8 +143,8 @@
 			ballNode = this.getNode('ball');
 
 			// Control Player Movement
-			handlePlayerMovement(player1Node);
-			handlePlayerMovement(player2Node);
+			utils.handlePlayerMovement(player1Node, app);
+			utils.handlePlayerMovement(player2Node, app);
 
 			// Handle Ball Movement and interractions
 			// Bounce off cieling and floor
