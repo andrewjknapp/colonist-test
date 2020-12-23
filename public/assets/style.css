@@ -3,7 +3,7 @@ body,
     margin: 0;
     width: 100vw;
     height: 100vh;
-    background-image: url("./assets/reef.jpg");
+    background-image: url("reef.jpg");
     background-position: center;
     background-attachment: fixed;
     background-size: cover;
