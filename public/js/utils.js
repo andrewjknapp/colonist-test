@@ -52,6 +52,21 @@ var utils = {
         }
 
         return ballIsHitting;
+    },
+
+    bounceBallOffPlayerPaddle: (ball, player) => {
+
+        ball.dx *= -1.1;
+
+        let locationOnPaddle = player.y - ball.y;
+
+        if (locationOnPaddle > -(player.height / 2)) {
+            ball.dy = -(Math.random() * 5) - Math.abs(ball.dy)
+
+        } else {
+            ball.dy = (Math.random() * 5) + Math.abs(ball.dy);
+
+        }
     }
 
 }

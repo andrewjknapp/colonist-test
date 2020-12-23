@@ -155,11 +155,11 @@
 			}
 
 			if (utils.ballIsHittingPlayerPaddle(ballNode, player1Node)) {
-				modifyBallVelocity(ballNode, player1Node);
+				utils.bounceBallOffPlayerPaddle(ballNode, player1Node);
 			}	
-			// If Ball makes contact with Player2's paddle
+
 			else if (utils.ballIsHittingPlayerPaddle(ballNode, player2Node)) {
-				modifyBallVelocity(ballNode, player2Node);
+				utils.bounceBallOffPlayerPaddle(ballNode, player2Node);
 			}
 			else if (ballNode.x <= 0) {
 				console.log("PLAYER 2 SCORES!!");
@@ -178,23 +178,6 @@
 			ballNode.y += ballNode.dy;
 			
 		};
-
-		const modifyBallVelocity = (ball, player) => {
-
-			ball.dx *= -1.1;
-
-			let locationOnPaddle = player.y - ball.y;
-
-			if (locationOnPaddle > -(player.height / 2)) {
-				ball.dy = -(Math.random() * 5) - Math.abs(ball.dy)
-
-			} else {
-				ball.dy = (Math.random() * 5) + Math.abs(ball.dy);
-
-			}
-
-
-		}
 
 		document.addEventListener("keydown", (e) => {
 			if (!app.isPaused) {
