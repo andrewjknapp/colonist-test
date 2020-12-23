@@ -34,7 +34,7 @@ var utils = {
         let ballIsBehindPaddle;
 
         if (playerIsOnLeft) {
-            ballIsInfrontOfPaddle = ballNode.x > playerNode.x + playerNode.width;
+            ballIsInfrontOfPaddle = ballNode.x > playerNode.x + playerNode.width + 20;
             ballIsBehindPaddle = ballNode.x < playerNode.x;
         }  else {
             ballIsInfrontOfPaddle = ballNode.x + ballNode.width < playerNode.x;
