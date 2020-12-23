@@ -1,35 +1,41 @@
 var utils = {
     handlePlayerMovement: (player, app) => {
-        // If the player is within the canvas allow to move *OR*
-        if (player.y > 0 && player.y < app.height - player.height ||
-            // If player is at top boundary, prevent from going upward *OR*
-            player.y === 0 && player.direction != -1 ||
-            // If player is at bottom boundary, prevent from going downward
-            player.y === app.height - player.height && player.direction != 1) {
+        const playerIsWithinCanvas = player.y > 0 && player.y < app.height - player.height;
+        const playerIsAtTop =  player.y === 0;
+        const playerIsGoingDown = player.direction != -1;
+        const playerIsAtBottom = player.y === app.height - player.height;
+        const playerIsGoingUp = player.direction != 1;
+
+
+        const playerIsAboveTop = player.y < 0;
+        const playerIsBelowBottom = player.y > app.height - player.height;
+
+        if (playerIsWithinCanvas ||
+            playerIsAtTop && playerIsGoingDown ||
+            playerIsAtBottom && playerIsGoingUp) {
 
             player.y += player.direction * player.speed;
         }
-        // If the player is above the top, set y to top.
-        else if (player.y < 0) {
+        else if (playerIsAboveTop) {
             player.y = 0;
         }
-        // If the player is below the bottom, set y to bottom.
-        else if (player.y > app.height - player.height) {
+        else if (playerIsBelowBottom) {
             player.y = app.height - player.height;
         }
     },
+
     ballIsHittingPlayerPaddle: (ballNode, playerNode) => {
-        let playerIsOnLeft = playerNode.position === "left";
+        const playerIsOnLeft = playerNode.position === "left";
 
-        let ballTop = ballNode.y;
-        let ballBottom = ballNode.y + ballNode.height;
-        let ballRight = ballNode.x + ballNode.width;
-        let ballLeft = ballNode.x;
+        const ballTop = ballNode.y;
+        const ballBottom = ballNode.y + ballNode.height;
+        const ballRight = ballNode.x + ballNode.width;
+        const ballLeft = ballNode.x;
 
-        let playerPaddleTop = playerNode.y;
-        let playerPaddleBottom = playerNode.y + playerNode.height;
-        let playerPaddleRight = playerNode.x + playerNode.width;
-        let playerPaddleLeft = playerNode.x;
+        const playerPaddleTop = playerNode.y;
+        const playerPaddleBottom = playerNode.y + playerNode.height;
+        const playerPaddleRight = playerNode.x + playerNode.width;
+        const playerPaddleLeft = playerNode.x;
 
         let ballIsHitting = true;
 
@@ -58,7 +64,7 @@ var utils = {
 
         ball.dx *= -1.1;
 
-        let locationOnPaddle = player.y - ball.y;
+        const locationOnPaddle = player.y - ball.y;
 
         if (locationOnPaddle > -(player.height / 2)) {
             ball.dy = -(Math.random() * 5) - Math.abs(ball.dy)
