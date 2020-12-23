@@ -76,6 +76,12 @@ var utils = {
         if (ballIsHittingCeiling || ballIsHittingFloor) {
             ball.dy *= -1;
         }
+    },
+    sharedPlayerAttributes: {
+        width  : 20,
+        height : 100,
+        speed  : 20,
+        direction : 0,
     }
 
 }

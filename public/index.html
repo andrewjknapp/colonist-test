@@ -21,12 +21,7 @@
 		const SCORE_TO_WIN = 5;
 		const BALL_INITIAL_HORIZONTAL_SPEED = 9;
 		const BALL_INITIAL_VERTICAL_SPEED = 5;
-		const sharedPlayerAttributes = {
-			width  : 20,
-			height : 100,
-			speed  : 20,
-			direction : 0,
-		}
+		
 		let storedVerticalBallSpeed;
 		let storedHorizontalBallSpeed;
 		
@@ -51,7 +46,7 @@
 				y  : (app.height / 2) - 50,
 				color : "#ec7e0f",
 				position: "left",
-				...sharedPlayerAttributes,
+				...utils.sharedPlayerAttributes,
 			})
 
 			this.nodes.push({
@@ -60,7 +55,7 @@
 				y  : (app.height / 2) - 50,
 				color: "#ff3399",
 				position: "right",
-				...sharedPlayerAttributes,
+				...utils.sharedPlayerAttributes,
 			})
 
 			this.nodes.push({
