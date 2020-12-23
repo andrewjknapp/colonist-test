@@ -143,15 +143,14 @@
 			player1Node = this.getNode('player1');
 			player2Node = this.getNode('player2');
 			ballNode = this.getNode('ball');
+			
+			const player1HasScored = ballNode.x >= (app.width - ballNode.width);
+			const player2HasScored = ballNode.x <= 0;
 
 			utils.handlePlayerMovement(player1Node, app);
 			utils.handlePlayerMovement(player2Node, app);
 
-			// Handle Ball Movement and interractions
-			// Bounce off cieling and floor
-			if (ballNode.y <= 0 || ballNode.y >= (app.height - ballNode.height)) {
-				ballNode.dy *= -1;
-			}
+			utils.handleBallHittingCeilingAndFloor(ballNode);
 
 			if (utils.ballIsHittingPlayerPaddle(ballNode, player1Node)) {
 				utils.bounceBallOffPlayerPaddle(ballNode, player1Node);
@@ -160,13 +159,13 @@
 			else if (utils.ballIsHittingPlayerPaddle(ballNode, player2Node)) {
 				utils.bounceBallOffPlayerPaddle(ballNode, player2Node);
 			}
-			else if (ballNode.x <= 0) {
+			else if (player2HasScored) {
 				console.log("PLAYER 2 SCORES!!");
 				app.p2Score++;
 				console.log(`****** SCORE *****\nPlayer 1: ${app.p1Score}\nPlayer 2: ${app.p2Score}\n*****************`);
 				this.nextRound();
 			} 
-			else if (ballNode.x >= (app.width - ballNode.width)) {
+			else if (player1HasScored) {
 				console.log("PLAYER 1 SCORES!!");
 				app.p1Score++;
 				console.log(`****** SCORE *****\nPlayer 1: ${app.p1Score}\nPlayer 2: ${app.p2Score}\n*****************`)

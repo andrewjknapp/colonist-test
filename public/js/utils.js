@@ -32,7 +32,7 @@ var utils = {
 
         let ballIsInfrontOfPaddle;
         let ballIsBehindPaddle;
-        
+
         if (playerIsOnLeft) {
             ballIsInfrontOfPaddle = ballNode.x > playerNode.x + playerNode.width;
             ballIsBehindPaddle = ballNode.x < playerNode.x;
@@ -66,6 +66,14 @@ var utils = {
         } else {
             ball.dy = (Math.random() * 5) + Math.abs(ball.dy);
 
+        }
+    },
+    handleBallHittingCeilingAndFloor(ball) {
+        const ballIsHittingCeiling = ball.y <= 0;
+        const ballIsHittingFloor = ball.y >= (app.height - ball.height);
+        
+        if (ballIsHittingCeiling || ballIsHittingFloor) {
+            ball.dy *= -1;
         }
     }
 
