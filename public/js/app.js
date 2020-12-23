@@ -39,8 +39,16 @@ var app = {
 		for(var index in this.nodes){
 			var node = this.nodes[index];
 
-			this.context.fillStyle = node.color;
-			this.context.fillRect(node.x, node.y, node.width, node.height);
+			if (!(node.id === "ball")) {
+				this.context.fillStyle = node.color;
+				this.context.fillRect(node.x, node.y, node.width, node.height);
+			} else {
+				this.context.fillStyle = node.color;
+				this.context.beginPath();
+				this.context.arc(node.x, node.y, (node.width / 2), 0*Math.PI, 2*Math.PI);
+				this.context.fill();
+				this.context.stroke();
+			}
 		}
 
 		this.lastUpdate = Date.now();

@@ -1,46 +1,199 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<link rel="stylesheet" href="assets/style.css">
 	<title>Ping Pong Game</title>
 </head>
 <body>
 	<canvas id="canvas" width="800" height="400"></canvas>
 	<script type="text/javascript" src="js/app.js"></script>
+	<script type="text/javascript" src="js/utils.js"></script>
 	<script type="text/javascript">
-		//Sample functions, remove these functions and design ping-pong game with onInit and onUpdate.
+		
 
+		app.keyupBindings = {};
+		app.keydownBindings = {};
+		app.p1Score = 0;
+		app.p2Score = 0;
+
+
+		const SCORE_TO_WIN = 5;
+		const BALL_INITIAL_HORIZONTAL_SPEED = 9;
+		const BALL_INITIAL_VERTICAL_SPEED = 5;
+		
+		let storedVerticalBallSpeed;
+		let storedHorizontalBallSpeed;
+		
 		app.onInit = function(){
+			// Ensure the canvas is sized correctly for the browser
+			const canvas = document.getElementById("canvas");
+			canvas.width = window.innerWidth;
+			this.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+			this.height = window.innerHeight;
+
+			// The games starts in the paused state
+			this.isPaused = true;
+
+			// Generate Initial Ball velocity
+			storedVerticalBallSpeed = (Math.random() * BALL_INITIAL_VERTICAL_SPEED) - BALL_INITIAL_VERTICAL_SPEED / 2;
+			storedHorizontalBallSpeed = (Math.random() - 0.5 > 0 ? 1 : -1) * BALL_INITIAL_HORIZONTAL_SPEED
+		
 			this.nodes.push({
-				id : 'red-box',
+				id : "player1",
 				x  : 100,
-				y  : 0,
-				width  : 100,
-				height : 100,
-				color  : 'red',
-				direction : 0
-			});
+				y  : (app.height / 2) - 50,
+				color : "#ec7e0f",
+				position: "left",
+				...utils.sharedPlayerAttributes,
+			})
 
 			this.nodes.push({
-				id : 'black-box',
-				x  : 50,
-				y  : 0,
-				width  : 150,
-				height : 150,
-				color  : 'black'
-			});
-		};
+				id : "player2",
+				x  : app.width - 120,
+				y  : (app.height / 2) - 50,
+				color: "#ff3399",
+				position: "right",
+				...utils.sharedPlayerAttributes,
+			})
 
-		app.onUpdate = function(time){
-			this.getNode('black-box').y++;
+			this.nodes.push({
+				id : "ball",
+				x  : (app.width / 2) - 10,
+				y  : (app.height / 2) - 10,
+				color  : "white",
+				width  : 20,
+				height : 20,
+				speed  : 5,
+				dy : 0,
+				dx : 0,
+			})
 
-			if(Math.cos(this.timestamp / 100) > 0){
-				this.getNode('red-box').direction = -1;
-			}else{
-				this.getNode('red-box').direction = 1;
+			this.keydownBindings = {
+				"w": () => (this.getNode('player1').direction = -1),
+				"s": () => (this.getNode('player1').direction = 1),
+				"ArrowUp": () => (this.getNode('player2').direction = -1),
+				"ArrowDown": () => (this.getNode('player2').direction = 1),
 			}
 
-			this.getNode('red-box').x+=this.getNode('red-box').direction;
+			this.keyupBindings = {
+				"w": () => (this.getNode('player1').direction = 0),
+				"s": () => (this.getNode('player1').direction = 0),
+				"ArrowUp": () => (this.getNode('player2').direction = 0),
+				"ArrowDown": () => (this.getNode('player2').direction = 0),
+			}
+
+			console.log("***** Press Space Bar to Start *****");
 		};
+
+		app.pause = function() {
+			this.isPaused = !this.isPaused;
+			ballNode = this.getNode('ball')
+
+			if (this.isPaused) {
+				storedHorizontalBallSpeed = ballNode.dx;
+				storedVerticalBallSpeed = ballNode.dy;
+				ballNode.dy = 0;
+				ballNode.dx = 0;
+			}
+			else {
+				ballNode.dx = storedHorizontalBallSpeed;
+				ballNode.dy = storedVerticalBallSpeed;
+			}
+		}
+
+		app.reset = function() {
+			app.p1Score = 0;
+			app.p2Score = 0;
+			this.nodes = [];
+			this.onInit();
+		}
+
+		app.nextRound = function() {
+			if (this.p1Score >= SCORE_TO_WIN) {
+				console.log("PLAYER 1 WINS!!!");
+				this.reset();
+				return;
+			}
+			else if (this.p1Score >= SCORE_TO_WIN) {
+				console.log("PLAYER 2 WINS!!!");
+				this.reset();
+				return;
+			}
+			this.nodes = [];
+			this.onInit(); 
+		}
+		
+		
+		// Used to store nodes to avoid calling them
+		// through getNode to avoid the O(n) lookup
+		let player1Node;
+		let player2Node;
+		let ballNode;
+
+		app.onUpdate = function(time){
+			player1Node = this.getNode('player1');
+			player2Node = this.getNode('player2');
+			ballNode = this.getNode('ball');
+
+			const player1HasScored = ballNode.x >= (app.width - ballNode.width);
+			const player2HasScored = ballNode.x <= 0;
+
+			utils.handlePlayerMovement(player1Node, app);
+			utils.handlePlayerMovement(player2Node, app);
+
+			utils.handleBallHittingCeilingAndFloor(ballNode);
+
+			if (utils.ballIsHittingPlayerPaddle(ballNode, player1Node)) {
+				utils.bounceBallOffPlayerPaddle(ballNode, player1Node);
+			}	
+
+			else if (utils.ballIsHittingPlayerPaddle(ballNode, player2Node)) {
+				utils.bounceBallOffPlayerPaddle(ballNode, player2Node);
+			}
+			else if (player2HasScored) {
+				console.log("PLAYER 2 SCORES!!");
+				app.p2Score++;
+				console.log(`****** SCORE *****\nPlayer 1: ${app.p1Score}\nPlayer 2: ${app.p2Score}\n*****************`);
+				this.nextRound();
+			} 
+			else if (player1HasScored) {
+				console.log("PLAYER 1 SCORES!!");
+				app.p1Score++;
+				console.log(`****** SCORE *****\nPlayer 1: ${app.p1Score}\nPlayer 2: ${app.p2Score}\n*****************`)
+				this.nextRound();
+			} 
+			
+			ballNode.x += ballNode.dx;
+			ballNode.y += ballNode.dy;
+			
+		};
+
+		document.addEventListener("keydown", (e) => {
+			const appIsNotPaused = !app.isPaused;
+			if (appIsNotPaused) {
+				let action = app.keydownBindings[e.key];
+				if (action) {
+					action();
+				};
+			}
+
+			if (e.key === " ") {
+				app.pause();
+			}
+		})
+
+		document.addEventListener("keyup", (e) => {
+			const appIsNotPaused = !app.isPaused;
+			if (appIsNotPaused) {
+				let action = app.keyupBindings[e.key];
+				if (action) {
+					action();
+				};
+			}
+		})
+		
 	</script>
 </body>
 </html>
