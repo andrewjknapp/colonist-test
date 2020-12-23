@@ -29,51 +29,6 @@
 		}
 		let storedVerticalBallSpeed;
 		let storedHorizontalBallSpeed;
-
-		// Used to store nodes to avoid calling them
-		// through getNode to avoid the O(n) lookup
-		let player1Node;
-		let player2Node;
-		let ballNode;
-		
-
-		app.pause = function() {
-			this.isPaused = !this.isPaused;
-			ballNode = this.getNode('ball')
-
-			if (this.isPaused) {
-				storedHorizontalBallSpeed = ballNode.dx;
-				storedVerticalBallSpeed = ballNode.dy;
-				ballNode.dy = 0;
-				ballNode.dx = 0;
-			}
-			else {
-				ballNode.dx = storedHorizontalBallSpeed;
-				ballNode.dy = storedVerticalBallSpeed;
-			}
-		}
-
-		app.reset = function() {
-			app.p1Score = 0;
-			app.p2Score = 0;
-			this.nodes = [];
-			this.onInit();
-		}
-
-		app.nextRound = function() {
-			if (this.p1Score >= SCORE_TO_WIN) {
-				console.log("PLAYER 1 WINS!!!");
-				this.reset();
-				return;
-			}
-			else if (this.p1Score >= SCORE_TO_WIN) {
-				console.log("PLAYER 2 WINS!!!");
-				this.reset();
-				return;
-			}
-			this.nodes = [];
-			this.onInit(); 
-		}
 		
 		app.onInit = function(){
 			// Ensure the canvas is sized correctly for the browser
@@ -136,6 +91,51 @@
 
 			console.log("***** Press Space Bar to Start *****");
 		};
+
+		app.pause = function() {
+			this.isPaused = !this.isPaused;
+			ballNode = this.getNode('ball')
+
+			if (this.isPaused) {
+				storedHorizontalBallSpeed = ballNode.dx;
+				storedVerticalBallSpeed = ballNode.dy;
+				ballNode.dy = 0;
+				ballNode.dx = 0;
+			}
+			else {
+				ballNode.dx = storedHorizontalBallSpeed;
+				ballNode.dy = storedVerticalBallSpeed;
+			}
+		}
+
+		app.reset = function() {
+			app.p1Score = 0;
+			app.p2Score = 0;
+			this.nodes = [];
+			this.onInit();
+		}
+
+		app.nextRound = function() {
+			if (this.p1Score >= SCORE_TO_WIN) {
+				console.log("PLAYER 1 WINS!!!");
+				this.reset();
+				return;
+			}
+			else if (this.p1Score >= SCORE_TO_WIN) {
+				console.log("PLAYER 2 WINS!!!");
+				this.reset();
+				return;
+			}
+			this.nodes = [];
+			this.onInit(); 
+		}
+		
+		
+		// Used to store nodes to avoid calling them
+		// through getNode to avoid the O(n) lookup
+		let player1Node;
+		let player2Node;
+		let ballNode;
 
 		app.onUpdate = function(time){
 			player1Node = this.getNode('player1');
